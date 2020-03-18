@@ -1,6 +1,7 @@
 from typing import List
 
 import pandas as pd
+import datetime
 
 CONFIRMED_CASES_URL = f"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data" \
                       f"/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv "
@@ -29,7 +30,10 @@ def poland_cases_by_date(day: int, month: int, year: int = 2020) -> int:
     """
     
     # Your code goes here (remove pass)
-    pass
+    new_year = str(year)[2:]
+    int(new_year)
+    pbd = confirmed_cases.loc[confirmed_cases["Country/Region"]=="Poland"][f"{month}/{day}/{new_year}"].values[0]
+    return pbd
 
 
 def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
@@ -49,7 +53,13 @@ def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
     """
 
     # Your code goes here (remove pass)
-    pass
+    new_year = str(year)[2:]
+    int(new_year)
+    listakrajow = []
+    for line in range(0,5):
+        a = confirmed_cases.sort_values(f"{month}/{day}/{new_year}", ascending=False).values[line][1]
+        listakrajow.append(a)
+    return listakrajow
 
 # Function name is wrong, read the pydoc
 def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
@@ -70,4 +80,13 @@ def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
     """
     
     # Your code goes here (remove pass)
-    pass
+    licznik = 0
+    dzisiaj = datetime.date(year, month, day)
+    jakdawno = datetime.date.today() - dzisiaj
+    iledni = jakdawno.days
+    rzedy =  confirmed_cases.shape[0]
+    for rzad in range(0,rzedy):
+        zmiana = confirmed_cases.values[rzad][-iledni] - confirmed_cases.values[rzad][-(iledni+1)]
+        if zmiana == 0:
+            licznik += 1
+    return licznik
